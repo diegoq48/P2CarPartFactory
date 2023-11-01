@@ -1,5 +1,8 @@
 package main;
 
+import java.util.LinkedList;
+
+import data_structures.ListQueue;
 import interfaces.Queue;
 
 public class PartMachine {
@@ -25,8 +28,8 @@ public class PartMachine {
         this.period = period;
         this.partWeightError = weightError;
         this.chanceOfDefective = chanceOfDefective;
-        this.timer = new Queue<Integer>();
-        this.conveyorBelt = new Queue<CarPart>();
+        this.timer = new ListQueue<>();  
+        this.conveyorBelt = new ListQueue<>();
         this.totalPartsProduced = 0;
 
     }
@@ -82,7 +85,7 @@ public class PartMachine {
     }
     public void resetConveyorBelt() {
         //make all the values null
-        this.conveyorBelt = new Queue<CarPart>();
+        this.conveyorBelt = new ListQueue<CarPart>();
     }
     public int tickTimer() {
         // returns the value at the front before rotating it to the back 
