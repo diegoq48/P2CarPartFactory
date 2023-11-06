@@ -1,10 +1,9 @@
 package main;
 
 import java.util.LinkedList;
-
 import data_structures.ListQueue;
 import interfaces.Queue;
-
+import java.util.Random;
 public class PartMachine {
     private int id;
     private Queue<Integer> timer; 
@@ -28,11 +27,13 @@ public class PartMachine {
         this.period = period;
         this.partWeightError = weightError;
         this.chanceOfDefective = chanceOfDefective;
-        this.timer = new ListQueue<>();  
+        this.timer = this.setTimer();  
         this.conveyorBelt = new ListQueue<>();
+        this.setConveyorBelt();
         this.totalPartsProduced = 0;
 
     }
+    
     public int getId() {
         return this.id;
     }
@@ -40,6 +41,16 @@ public class PartMachine {
         if(id < 0) throw new IllegalArgumentException("Id must be greater than 0");
         this.id = id;
     }
+    private Queue<Integer> setTimer(){
+        // Create a new queue
+        Queue<Integer> timer = new ListQueue<>();
+        // Add the values to the queue in reverse order
+        for (int i = this.getPeriod() - 1; i >= 0; i--) {
+            timer.enqueue(i);
+        }
+        return timer;
+    }
+    
     public Queue<Integer> getTimer() {
        return this.timer;
     }
@@ -58,12 +69,12 @@ public class PartMachine {
         return this.conveyorBelt;
         
     }
-    public void setConveyorBelt(Queue<CarPart> conveyorBelt) {
-    	if(conveyorBelt == null) throw new IllegalArgumentException("Conveyor belt cannot be null");
-        this.conveyorBelt = conveyorBelt;
+    public void setConveyorBelt() {
+        for(int i = 0; i < 10; i++){
+            this.getConveyorBelt().enqueue(null);
+        }
     }
     public int getTotalPartsProduced() {
-        if(this.totalPartsProduced < 0) throw new IllegalArgumentException("Total parts produced must be greater than 0");
         return this.totalPartsProduced;
     }
     public void setTotalPartsProduced(int count) {
@@ -85,7 +96,10 @@ public class PartMachine {
     }
     public void resetConveyorBelt() {
         //make all the values null
-        this.conveyorBelt = new ListQueue<CarPart>();
+        this.getConveyorBelt().clear();
+        for(int i = 0; i < this.getConveyorBelt().size(); i++) {
+            this.getConveyorBelt().enqueue(null);
+        }
     }
     public int tickTimer() {
         // returns the value at the front before rotating it to the back 
@@ -93,25 +107,35 @@ public class PartMachine {
         this.getTimer().enqueue(this.getTimer().dequeue());
         return front;
     }
-    public CarPart produceCarPart() {
-        // Check if the timer is zero
-        if (this.getTimer().front() == 0) {
-            // Create a new CarPart object with the same id and name as the previous parts, but with a randomly assigned weight based on the weight error for this machine
-            double weight = this.getPart().getWeight() + (Math.random() * 2 - 1) * this.getPartWeightError();
-            CarPart newPart = new CarPart(this.getPart().getId(), this.getPart().getName(), weight, true);
-            // Check if the new part is defective by dividing the total amount of parts produced up to this point by the defective chance given. If the remainder is 0, the part is defective.
-            if (this.getTotalPartsProduced() % this.getChanceOfDefective() == 0) {
-                newPart.setDetective(true);
-            }
-            // Place the new part in the conveyor belt
-            this.getConveyorBelt().enqueue(newPart);
-            // Return the new part
-            return newPart;
-        } else {
-            this.getConveyorBelt().enqueue(null);
-            return this.getConveyorBelt().front();
-        }
+    public int getPeriod() {
+        return this.period;
     }
+    public void setPeriod(int period) {
+        if(period < 0) throw new IllegalArgumentException("Period must be greater than 0");
+        this.period = period;
+    }
+    public CarPart produceCarPart() {
+        int time = tickTimer();
+        CarPart priorPart = this.getConveyorBelt().dequeue();
+        if(time != 0){
+            conveyorBelt.enqueue(null);
+        }else{
+            Random random = new Random();
+            CarPart newPart = new CarPart(this.getPart().getId(), this.getPart().getName(), (part1.getWeight() - partWeightError + 2 * partWeightError * random.nextDouble()), (this.getTotalPartsProduced() % this.getChanceOfDefective() == 0));
+            this.setTotalPartsProduced(this.getTotalPartsProduced() + 1);
+            conveyorBelt.enqueue(newPart);
+        }
+        //return the value at the front of the queue
+        return priorPart;
+    }
+
+
+
+
+
+    
+    
+    
 
     /**
      * Returns string representation of a Part Machine in the following format:

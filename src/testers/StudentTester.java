@@ -42,7 +42,7 @@ public class StudentTester {
                 () -> assertEquals(10, part.getId(), "Didn't return correct part id."),
                 () -> assertEquals("Transmission", part.getName(), "Didn't return correct part name."),
                 () -> assertEquals(15, part.getWeight(), "Didn't return correct weight for part."),
-                () -> assertTrue(part.isDetective(), "Assigned incorrect defective status")
+                () -> assertTrue(part.isDefective(), "Assigned incorrect defective status")
             );
         }
     	@Test
@@ -53,7 +53,7 @@ public class StudentTester {
                 () -> assertEquals(142, part.getId(), "Didn't return correct part id."),
                 () -> assertEquals("Motor", part.getName(), "Didn't return correct part name."),
                 () -> assertEquals(154, part.getWeight(), "Didn't return correct weight for part."),
-                () -> assertTrue(!part.isDetective(), "Assigned incorrect defective status")
+                () -> assertTrue(!part.isDefective(), "Assigned incorrect defective status")
             );
         }
     }
@@ -105,7 +105,7 @@ public class StudentTester {
                 () -> assertEquals(1, machine1.getId(), "Didn't return correct machine id."),
                 () -> assertEquals("Transmission", machine1.getPart().getName(), "Didn't return correct part name."),
                 () -> assertEquals(15.0, machine1.getPart().getWeight(), 1.7, "Failed to assign proper weight"),
-                () -> assertTrue(part.isDetective(), "Assigned incorrect defective status")
+                () -> assertTrue(part.isDefective(), "Assigned incorrect defective status")
             );
         }
         @Test
@@ -177,6 +177,7 @@ public class StudentTester {
                 machine1.produceCarPart();
             }
             for (int i = 0; i < 10; i++) {
+                System.out.println(machine1.getConveyorBelt().front());
                 if (i % 3 == 0 && machine1.getConveyorBelt().front() == null)
                     fail("Didn't place products with proper spacing");
                 else if(i % 3 != 0 && machine1.getConveyorBelt().front() != null)
@@ -204,9 +205,9 @@ public class StudentTester {
                 () -> assertEquals(15.0, part.getWeight(), 1.2, "Weight isn't in the proper range"),
                 () -> assertEquals(15.0, part2.getWeight(), 1.2, "Weight isn't in the proper range"),
                 () -> assertEquals(15.0, part3.getWeight(), 1.2, "Weight isn't in the proper range"),
-                () -> assertTrue(part.isDetective(), "First part would be defective with a 0.2 chance"),
-                () -> assertTrue(!part2.isDetective(), "Second part would not be defective a 0.2 chance"),
-                () -> assertTrue(!part3.isDetective(), "Third part would not be defective with a 0.2 chance"),
+                () -> assertTrue(part.isDefective(), "First part would be defective with a 0.2 chance"),
+                () -> assertTrue(!part2.isDefective(), "Second part would not be defective a 0.2 chance"),
+                () -> assertTrue(!part3.isDefective(), "Third part would not be defective with a 0.2 chance"),
                 () -> assertEquals("Transmission", part.getName(), "Didn't give correct name."),
                 () -> assertEquals("Transmission", part2.getName(), "Didn't give correct name."),
                 () -> assertEquals("Transmission", part3.getName(), "Didn't give correct name.")
@@ -232,9 +233,9 @@ public class StudentTester {
             
             assertAll(
                 
-                () -> assertTrue(part.isDetective(), "First part would be defective with a 0.2 chance"),
-                () -> assertTrue(part2.isDetective(), "Fifth part would be defective a 0.2 chance"),
-                () -> assertTrue(part3.isDetective(), "Tenth part would be defective with a 0.2 chance")
+                () -> assertTrue(part.isDefective(), "First part would be defective with a 0.2 chance"),
+                () -> assertTrue(part2.isDefective(), "Fifth part would be defective a 0.2 chance"),
+                () -> assertTrue(part3.isDefective(), "Tenth part would be defective with a 0.2 chance")
             );
         }
     }

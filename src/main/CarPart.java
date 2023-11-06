@@ -4,17 +4,17 @@ public class CarPart {
     private int id;
     private String name;
     private double weight;
-    private boolean isDetective;
+    private boolean isDefective;
 
     
-    public CarPart(int id, String name, double weight, boolean isDetective) {
+    public CarPart(int id, String name, double weight, boolean isDefective) {
         if(id < 0) throw new IllegalArgumentException("Id must be greater than 0");
         if(name == null || name.isEmpty()) throw new IllegalArgumentException("Name cannot be null or empty");
         if(weight < 0) throw new IllegalArgumentException("Weight must be greater than 0");
         this.id = id;
         this.name = name;
         this.weight = weight;
-        this.isDetective = isDetective;
+        this.isDefective = isDefective;
     }
     public int getId() {
         return id;
@@ -34,15 +34,15 @@ public class CarPart {
       return this.weight;
     }
     public void setWeight(double weight) {
-        if(weight < 0) throw new IllegalArgumentException("Weight must be greater than 0");
+       // if(weight < 0) throw new IllegalArgumentException("Weight must be greater than 0");
         this.weight = weight;
     }
 
-    public boolean isDetective() {
-        return this.isDetective;
+    public boolean isDefective() {
+        return this.isDefective;
     }
-    public void setDetective(boolean isDetective) {
-        this.isDetective = isDetective;
+    public void setDefective(boolean isDefective) {
+        this.isDefective = isDefective;
     }
     /**
      * Returns the parts name as its string representation
