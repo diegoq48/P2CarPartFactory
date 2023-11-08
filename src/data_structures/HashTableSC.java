@@ -1,6 +1,8 @@
 package data_structures;
 
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import interfaces.HashFunction;
 import interfaces.List;
@@ -88,6 +90,7 @@ public class HashTableSC<K, V> implements Map<K, V> {
 		
 		return null;
 	}
+
 
 	@Override
 	public boolean containsKey(K key) {

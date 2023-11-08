@@ -3,29 +3,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.swing.SingleSelectionModel;
+
+import data_structures.ArrayList;
+import data_structures.BasicHashFunction;
 import data_structures.HashTableSC;
+import data_structures.SinglyLinkedList;
 import interfaces.*;
 public class CarPartFactory {
     private List<PartMachine> machines = new data_structures.ArrayList<>();
     private List<Order> orders =  new data_structures.ArrayList<>();
-    private Map<Integer, CarPart> partCatalog = new HashTableSC<>(10, new interfaces.HashFunction<Integer>() {
-        @Override
-        public int hashCode(Integer key) {
-            return key;
-        }
-    });
-    private Map<Integer, List<CarPart>> inventory = new HashTableSC<>(10, new interfaces.HashFunction<Integer>() {
-        @Override
-        public int hashCode(Integer key) {
-            return key;
-        }
-    });
-    private Map<Integer, Integer> defectives = new HashTableSC<>(10, new interfaces.HashFunction<Integer>() {
-        @Override
-        public int hashCode(Integer key) {
-            return key;
-        }
-    });
+    private Map<Integer, CarPart> partCatalog = new HashTableSC<>(10, new BasicHashFunction());
+    private Map<Integer, List<CarPart>> inventory = new HashTableSC<>(10, new BasicHashFunction());
+    private Map<Integer, Integer> defectives = new HashTableSC<>(10, new BasicHashFunction());
     private Stack<CarPart> productionBin = new data_structures.LinkedStack<>();
 
         
@@ -87,12 +77,7 @@ public class CarPartFactory {
                 String[] values = line.split(",");
                 int id = Integer.parseInt(values[0]);
                 String customerName = values[1];
-                Map<Integer, Integer> requestedParts = new data_structures.HashTableSC<Integer, Integer>(10, new interfaces.HashFunction<Integer>() {
-                    @Override
-                    public int hashCode(Integer key) {
-                        return key;
-                    }
-                });
+                Map<Integer, Integer> requestedParts = new data_structures.HashTableSC<Integer, Integer>(10, new BasicHashFunction());
                 String[] SplitedValuesFromOriginalStringOnDash = values[2].split("-");
                 for(int i = 0; i < SplitedValuesFromOriginalStringOnDash.length; i++) {
                     String[] SplitedValuesOnSpaceToBuildTheMap = SplitedValuesFromOriginalStringOnDash[i].replaceAll("[()]", "").split(" ");
@@ -158,52 +143,60 @@ public class CarPartFactory {
         for(int i = 0; i < days; i++) {
             for(int j = 0; j < minutes; j++) {
                 for(PartMachine machine : this.getMachines()) {
-                    if(machine.getTimer().isEmpty()) {
-                        machine.getTimer().enqueue(machine.getPeriod());
-                    }
-                    int time = machine.getTimer().dequeue();
-                    if(time == 1) {
-                        machine.getTimer().enqueue(machine.getPeriod());
-                        if(!machine.getConveyorBelt().isEmpty()) {
-                            CarPart part = machine.getConveyorBelt().dequeue();
-                            if(part != null) {
-                                this.getProductionBin().push(part);
-                            }
-                        }
-                    } else {
-                        machine.getTimer().enqueue(time - 1);
+                    CarPart part = machine.produceCarPart();
+                    if(part != null) {
+                        //put the part in inventory the key is the id and the value is the count of the part if the part is not in the inventory then add it to the inventory with a count of 1
+                        this.getProductionBin().push(part);
                     }
                 }
             }
-            this.processOrders();
+            for(PartMachine machine : this.getMachines()) {
+                while(!machine.getConveyorBelt().isEmpty()) {
+                    CarPart part = machine.getConveyorBelt().dequeue();
+                    if(part != null) {
+                        this.getProductionBin().push(part);
+                    }
+                }
+            }
             this.storeInInventory();
     }
+    this.processOrders();
 }
 
+
+
    
-    public void processOrders() {
-        
-    }
-    /**
-     * Generates a report indicating how many parts were produced per machine,
-     * how many of those were defective and are still in inventory. Additionally, 
-     * it also shows how many orders were successfully fulfilled. 
-     */
-    public void generateReport() {
-        String report = "\t\t\tREPORT\n\n";
-        report += "Parts Produced per Machine\n";
-        for (PartMachine machine : this.getMachines()) {
-            report += machine + "\t(" + 
-            this.getDefectives().get(machine.getPart().getId()) +" defective)\t(" + 
-            this.getInventory().get(machine.getPart().getId()).size() + " in inventory)\n";
+public void processOrders() {
+    for(Order order : this.getOrders()) {
+        List<Integer> current_order_keys = order.getRequestedParts().getKeys();
+        boolean order_complete = true;
+        //System.out.println(current_order_keys);
+        for(int i = 0; i < current_order_keys.size(); i++) {
+            int current_key = current_order_keys.get(i);
+            int current_value = order.getRequestedParts().get(current_key);
+            /* this line is causing all of the trouble needs to be fixed 
+
+             */
+            if(this.getInventory().get(current_key).size() < current_value) {
+                order_complete = false;
+                break;
+            }
         }
-       
-        report += "\nORDERS\n\n";
-        for (Order transaction : this.getOrders()) {
-            report += transaction + "\n";
+        if(order_complete) {
+
+            for(int i = 0; i < current_order_keys.size(); i++) {
+                int current_key = current_order_keys.get(i);
+                int current_value = order.getRequestedParts().get(current_key);
+                for(int j = 0; j < current_value; j++) {
+                    this.getInventory().get(current_key).remove(0);
+                }
+            }
+            order.setFulfilled(true);
         }
-        System.out.println(report);
+
     }
+
+}
 
    
 
