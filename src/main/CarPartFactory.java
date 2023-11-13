@@ -159,6 +159,7 @@ public class CarPartFactory {
                 }
             }
             this.storeInInventory();
+            
     }
     this.processOrders();
 }
@@ -196,8 +197,30 @@ public void processOrders() {
 
     }
 
+
 }
 
-   
+   /**
+     * Generates a report indicating how many parts were produced per machine,
+     * how many of those were defective and are still in inventory. Additionally, 
+     * it also shows how many orders were successfully fulfilled. 
+     */
+    public void generateReport() {
+        String report = "\t\t\tREPORT\n\n";
+        report += "Parts Produced per Machine\n";
+        for (PartMachine machine : this.getMachines()) {
+            report += machine + "\t(" + 
+            this.getDefectives().get(machine.getPart().getId()) +" defective)\t(" + 
+            this.getInventory().get(machine.getPart().getId()).size() + " in inventory)\n";
+        }
+       
+        report += "\nORDERS\n\n";
+        for (Order transaction : this.getOrders()) {
+            report += transaction + "\n";
+        }
+        System.out.println(report);
+    }
+
+
 
 }

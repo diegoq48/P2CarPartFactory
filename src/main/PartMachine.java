@@ -97,7 +97,7 @@ public class PartMachine {
     public void resetConveyorBelt() {
         //make all the values null
         this.getConveyorBelt().clear();
-        for(int i = 0; i < this.getConveyorBelt().size(); i++) {
+        for(int i = 0; i < 10; i++) {
             this.getConveyorBelt().enqueue(null);
         }
     }
@@ -115,6 +115,9 @@ public class PartMachine {
         this.period = period;
     }
     public CarPart produceCarPart() {
+        if(this.getConveyorBelt().size() == 0){
+            this.resetConveyorBelt();
+        }
         int time = tickTimer();
         CarPart priorPart = this.getConveyorBelt().dequeue();
         if(time != 0){
