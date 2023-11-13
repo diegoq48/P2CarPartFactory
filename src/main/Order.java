@@ -2,6 +2,10 @@ package main;
 
 import interfaces.Map;
 
+/**
+ * The Order class represents an order made by a customer for car parts.
+ * Each order has an id, a customer name, a map of requested parts and a boolean indicating whether or not the order has been fulfilled.
+ */
 public class Order {
     private int id;
     private String customerName;
@@ -23,6 +27,7 @@ public class Order {
         this.requestedParts = requestedParts;
         this.fulfilled = fulfilled; 
     }
+     // getters and setters 
     public int getId() {
         return this.id;
     }
